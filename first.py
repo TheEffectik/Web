@@ -11,10 +11,10 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 @app.route('/')
 @app.route('/index')
-def index():
-    param = {}
-    param['username'] = "Заготовка"
-    return render_template('base.html', **param)
+@app.route('/index/<title>')
+def index(title):
+    return render_template('base.html', title=title)
+
 
 @app.route('/odd_even')
 def odd_even():
