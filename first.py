@@ -32,7 +32,8 @@ def form_sample():
                             <title>Пример формы</title>
                           </head>
                           <body>
-                            <h1>Форма для регистрации в суперсекретной системе</h1>
+                            <h1 align="center" >Анкета претендента</h1>
+                            <p align="center" > на участие в миссии</p>
                             <div>
                                 <form class="login_form" method="post">
                                     <input type="email" class="form-control" id="surname" placeholder="Введите фамилию" name="surname">
@@ -100,12 +101,10 @@ def form_sample():
         print(request.form['accept'])
         print(request.form['sex'])
         return "Форма отправлена"
-    
-def training(title):
-    if title == 'a':
-        return render_template('base.html', title=title, name='mars')
-    else:
-        return render_template('base.html', title=title, name='k_2')
 
+@app.route('/choice/<planet_name>')
+def planet(planet_name):
+    if planet_name == 'Марс':
+        return render_template
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
