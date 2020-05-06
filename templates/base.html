@@ -15,10 +15,14 @@
         <h1>Миссия Колонизации Марса</h1>
     </nav>
     <aside>И на Марсе будут яблони цвести!</aside>
-    <img src="/static/img/{{name}}.jpg">
+    <img src="https://avatars.mds.yandex.net/get-pdb/1378219/0f191218-3bc2-470c-9925-20bd04b7c657/s1200?webp=false" width=100px>
 </header>
 <!-- Begin page content -->
+{% for i in item %}
+Вы можете пройти на {{i}}</br>
+    {% endfor %}
 <main role="main" class="container">
+
     {% block content %}{% endblock %}
 </main>
 </body>
