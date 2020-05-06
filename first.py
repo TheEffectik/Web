@@ -8,12 +8,14 @@ from loginform import LoginForm
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
-item = ['/astronaut_selection', '/choice/<planet_name>']
+item = ['/astronaut_selection', '/choice/<planet_name>', '/results/<nickname>/<int:level>/<float:rating>']
 
 @app.route('/')
 def index():
     global item
     return render_template('base.html', item=item)
+
+
 
 
 @app.route('/astronaut_selection', methods=['POST', 'GET'])
@@ -101,6 +103,10 @@ def form_sample():
         print(request.form['accept'])
         print(request.form['sex'])
         return "Форма отправлена"
+
+@app.route('/results/<nickname>/<int:level>/<float:rating>')
+def result(nickname, level, rating):
+    return render_template('rating.html', nickname=nickname, level=level, rating=rating)
 
 @app.route('/choice/<planet_name>')
 def planet(planet_name):
