@@ -4,6 +4,8 @@ import random
 import json
 from wtforms.validators import DataRequired
 from loginform import LoginForm
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -12,9 +14,41 @@ item = ['/astronaut_selection', '/choice/<planet_name>', '/results/<nickname>/<i
         '----------flask.wtf---------',
         '/training/<prof> - Тренировки в полете, flask.wtf', '/list_prof - Список професий', '/answer или /auto_answer'
                                                                                              '- Автоматический ответ',
-        '/login - Двойная защита', '/distribution - по каютам']
+        '/login - Двойная защита', '/distribution - по каютам', '/table/<sex>/<int:age> - ну собсна таблица']
 list_prof = ['инженер-исследователь', 'пилот', 'строитель', 'экзобиолог', 'врач', 'инженер по терраформированию']
 cabin = ['Риддли Скотт', 'Энди Уир', 'Марк Уотни', 'Венката Капур', 'Тедди Сандерс', 'Шон Бин']
+images = ['https://images.wallpaperscraft.ru/image/pustynya_gory_pesok_nebo_pejzazh_100762_1152x864.jpg',
+          'https://avatars.mds.yandex.net/get-zen_doc/60857/pub_5c0a324c59f30300aa95a927_5c130f9232fd3100a9752c2b/scale_1200',
+          'https://cdn.photosight.ru/img/7/487/6505893_xlarge.jpg']
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = 'static/img'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+
+
+@app.route('/table/<sex>/<int:age>')
+def table(sex, age):
+    img = ''
+    color = '#'
+    if age <= 21:
+        img = '/static/img/mini.png'
+    else:
+        img = '/static/img/big.png'
+    colors_f = ['ef0097', 'fe28a2', 'ff1493', 'ff43a4', 'f664af', 'dd4492', 'cd2682', 'cd2682', 'ca2c92', 'bd33a4',
+              '991199']
+    colors_m = ['0000ff', '00008b', '082567', '1e2460', '1a153f', '240935', '20155e', '191970', '310062', '32127a',
+                '4b0082']
+    if sex == 'male':
+        if age < 100:
+            color += colors_m[age % 10]
+        else:
+            color += colors_m[-1]
+    else:
+        if age < 100:
+            color += colors_f[age % 10]
+        else:
+            color += colors_f[-1]
+    return render_template('table.html', img=img, color=color)
 
 
 @app.route('/distribution')
@@ -52,9 +86,22 @@ def prof(prof):
     return render_template('prof.html', prof=prof, title=prof)
 
 
-@app.route('/carousel')
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/carousel', methods=['POST', 'GET'])
 def car():
-    return render_template('carousel.html')
+    global images
+    if request.method == 'GET':
+        return render_template('carousel.html', images=images, len=len(images))
+    elif request.method == 'POST':
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(len(images) + 1) + filename[-4:]))
+        images.append('/static/img/' + str(len(images) + 1) + str(filename[-4:]))
+        return render_template('carousel.html', images=images, len=len(images))
+
 
 
 @app.route('/results/<nickname>/<int:level>/<float:rating>')

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Оформление каюты</h1>
+<table>
+    <colgroup>
+    <col span="2">
+  </colgroup>
+    <tr bgcolor="#7d7f7d"><th>Цвет стен</th><th>Эмблема</th></tr>
+    <tr><th bgcolor={{color}}></th><th><img src={{img}}></th></tr>
+</table>
+
+{% endblock %}
