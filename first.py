@@ -9,11 +9,18 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 item = ['/astronaut_selection', '/choice/<planet_name>', '/results/<nickname>/<int:level>/<float:rating>', '/carousel',
+        '----------flask.wtf---------',
         '/training/<prof> - Тренировки в полете, flask.wtf', '/list_prof - Список професий', '/answer или /auto_answer'
                                                                                              '- Автоматический ответ',
-        '/login - Двойная защита']
+        '/login - Двойная защита', '/distribution - по каютам']
 list_prof = ['инженер-исследователь', 'пилот', 'строитель', 'экзобиолог', 'врач', 'инженер по терраформированию']
+cabin = ['Риддли Скотт', 'Энди Уир', 'Марк Уотни', 'Венката Капур', 'Тедди Сандерс', 'Шон Бин']
 
+
+@app.route('/distribution')
+def distribution():
+    global cabin
+    return render_template('distribution.html', list=cabin, len=len(cabin))
 
 @app.route('/login')
 def login():
@@ -25,6 +32,7 @@ def index():
     global item
     return render_template('base.html', item=item)
 
+
 @app.route('/answer')
 @app.route('/auto_answer')
 def answer():
@@ -32,22 +40,27 @@ def answer():
            'sex': 'male', 'motivation': 'Всегда мечтал застрять на марсе!', 'ready': True}
     return render_template('auto_answer.html', dict=dict)
 
+
 @app.route('/list_prof')
 def list_prof():
     list_prof = ['инженер-исследователь', 'пилот', 'строитель', 'экзобиолог', 'врач', 'инженер по терраформированию']
     return render_template('list_prof.html', list_prof=list_prof)
 
+
 @app.route('/training/<prof>')
 def prof(prof):
     return render_template('prof.html', prof=prof, title=prof)
+
 
 @app.route('/carousel')
 def car():
     return render_template('carousel.html')
 
+
 @app.route('/results/<nickname>/<int:level>/<float:rating>')
 def result(nickname, level, rating):
     return render_template('rating.html', nickname=nickname, level=level, rating=rating)
+
 
 @app.route('/choice/<planet_name>')
 def planet(planet_name):
