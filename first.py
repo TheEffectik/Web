@@ -9,14 +9,49 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 item = ['/astronaut_selection', '/choice/<planet_name>', '/results/<nickname>/<int:level>/<float:rating>', '/carousel',
-        '/training/<prof> - Тренировки в полете, flask.wtf']
+        '/training/<prof> - Тренировки в полете, flask.wtf', '/list_prof - Список професий', '/answer или /auto_answer'
+                                                                                             '- Автоматический ответ',
+        '/login - Двойная защита']
+list_prof = ['инженер-исследователь', 'пилот', 'строитель', 'экзобиолог', 'врач', 'инженер по терраформированию']
+
+
+@app.route('/login')
+def login():
+    form = LoginForm()
+    return render_template('login.html', title='Авторизация', form=form)
 
 @app.route('/')
 def index():
     global item
     return render_template('base.html', item=item)
 
+@app.route('/answer')
+@app.route('/auto_answer')
+def answer():
+    dict ={'title': 'татйтле', 'surname': 'Watny', 'name': 'Mark', 'education': 'выше среднего', 'profession': 'штурман',
+           'sex': 'male', 'motivation': 'Всегда мечтал застрять на марсе!', 'ready': True}
+    return render_template('auto_answer.html', dict=dict)
 
+@app.route('/list_prof')
+def list_prof():
+    list_prof = ['инженер-исследователь', 'пилот', 'строитель', 'экзобиолог', 'врач', 'инженер по терраформированию']
+    return render_template('list_prof.html', list_prof=list_prof)
+
+@app.route('/training/<prof>')
+def prof(prof):
+    return render_template('prof.html', prof=prof, title=prof)
+
+@app.route('/carousel')
+def car():
+    return render_template('carousel.html')
+
+@app.route('/results/<nickname>/<int:level>/<float:rating>')
+def result(nickname, level, rating):
+    return render_template('rating.html', nickname=nickname, level=level, rating=rating)
+
+@app.route('/choice/<planet_name>')
+def planet(planet_name):
+    return render_template('mars.html', planet=planet_name)
 
 
 @app.route('/astronaut_selection', methods=['POST', 'GET'])
@@ -62,7 +97,7 @@ def form_sample():
 <div class="form-group form-check"><input type="checkbox" class="form-check-input" id="acceptRules" name="accept"><label class="form-check-label" for="acceptRules">Инженер по терраформированию</label></div>
 <div class="form-group form-check"><input type="checkbox" class="form-check-input" id="acceptRules" name="accept"><label class="form-check-label" for="acceptRules">Климатолог</label></div>
 <div class="form-group form-check"><input type="checkbox" class="form-check-input" id="acceptRules" name="accept"><label class="form-check-label" for="acceptRules">Специалист по радиационной защите</label></div>
-                                    
+
                                     <div class="form-group">
                                         <label for="form-check">Укажите пол</label>
                                         <div class="form-check">
@@ -104,22 +139,6 @@ def form_sample():
         print(request.form['accept'])
         print(request.form['sex'])
         return "Форма отправлена"
-
-@app.route('/training/<prof>')
-def prof(prof):
-    return render_template('prof.html', prof=prof, title=prof)
-
-@app.route('/carousel')
-def car():
-    return render_template('carousel.html')
-
-@app.route('/results/<nickname>/<int:level>/<float:rating>')
-def result(nickname, level, rating):
-    return render_template('rating.html', nickname=nickname, level=level, rating=rating)
-
-@app.route('/choice/<planet_name>')
-def planet(planet_name):
-    return render_template('mars.html', planet=planet_name)
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
